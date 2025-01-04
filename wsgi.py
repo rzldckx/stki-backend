@@ -1,3 +1,5 @@
+from app import app
+import setup
 import os
 from dotenv import load_dotenv
 
@@ -5,10 +7,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Jalankan setup
-import setup
+setup.run_setup()
 
 # Import aplikasi Flask setelah setup selesai
-from app import app
 
 if __name__ == "__main__":
-    app.run()
+    # Gunakan port dari variabel lingkungan
+    port = int(os.getenv('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)

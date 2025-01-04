@@ -4,21 +4,27 @@ import os
 from dotenv import load_dotenv
 from search import index_db
 
-# Load environment variables from .env file
-load_dotenv()
 
-data_file = os.getenv('DATA_FILE')
-db_file = os.getenv('DB_FILE')
+def run_setup():
+    # Load environment variables from .env file
+    load_dotenv()
 
-# Load CSV data
-df = pd.read_csv(data_file)
+    data_file = os.getenv('DATA_FILE')
+    db_file = os.getenv('DB_FILE')
 
-# Create SQLite connection and write data to SQLite
-conn = sqlite3.connect(db_file)
-df.to_sql('news', conn, if_exists='replace', index=False)
-conn.close()
+    # Load CSV data
+    df = pd.read_csv(data_file)
 
-# Indexing Whoosh
-index_db(db_file)
+    # Create SQLite connection and write data to SQLite
+    conn = sqlite3.connect(db_file)
+    df.to_sql('news', conn, if_exists='replace', index=False)
+    conn.close()
 
-print("Setup completed successfully.")
+    # Indexing Whoosh
+    index_db(db_file)
+
+    print("Setup completed successfully.")
+
+
+if __name__ == "__main__":
+    run_setup()
