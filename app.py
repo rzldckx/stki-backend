@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-import subprocess
+from indexing import index_db_background
 
 # Load environment variables from .env file
 load_dotenv()
@@ -99,8 +99,8 @@ def search_news():
 
 
 if __name__ == '__main__':
+    print("Starting Flask application...")
+    index_db_background()  # Start indexing in the background
     port = int(os.getenv('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
-
-    # Run the indexing script in the background
-    subprocess.Popen(['python', 'indexing.py'])
+    print("Flask application is running.")

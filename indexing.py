@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
 import shutil
+import threading
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,10 +17,12 @@ desired_schema = Schema(
     content=TEXT(stored=True)
 )
 
+
 def clear_index(index_dir):
     if os.path.exists(index_dir):
         shutil.rmtree(index_dir)
     os.makedirs(index_dir)
+
 
 # Clear the index directory before re-indexing
 index_dir = os.getenv('INDEX_DIR')
@@ -32,18 +35,31 @@ ix = create_in(index_dir, desired_schema)
 db_url = os.getenv('DB_URL')
 engine = create_engine(db_url)
 
+
 def add_documents(documents):
     writer = ix.writer()
     for doc_id, title, content in documents:
         writer.add_document(id=doc_id, title=title, content=content)
     writer.commit()
 
+
 def index_db():
+    print("Indexing started.")
     with engine.connect() as conn:
         df = pd.read_sql_query('SELECT * FROM news', conn)
-    documents = [(str(row['id']), row['title'], row['content']) for _, row in df.iterrows()]
+    print("Indexing in progress...")
+    documents = [(str(row['id']), row['title'], row['content'])
+                 for _, row in df.iterrows()]
     add_documents(documents)
+    print("Indexing completed.")
+
+
+def index_db_background():
+    def run_indexing():
+        index_db()
+
+    threading.Thread(target=run_indexing).start()
+
 
 if __name__ == '__main__':
-    index_db()
-    print("Indexing completed.")
+    index_db_background()
