@@ -72,6 +72,15 @@ def search():
         'news': paginated_results
     })
 
+@app.route('/news/<int:news_id>', methods=['GET'])
+def get_news_by_id(news_id):
+    news_item = news_data[news_data['id'] == news_id]
+
+    if not news_item.empty:
+        return jsonify(news_item.iloc[0].to_dict())
+    else:
+        return jsonify({'error': 'News item not found'}), 404
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
