@@ -40,6 +40,7 @@ def add_documents(documents):
     writer = ix.writer()
     for doc_id, title, content in documents:
         writer.add_document(id=doc_id, title=title, content=content)
+        print(f"Indexing {doc_id}")
     writer.commit()
 
 
