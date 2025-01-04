@@ -1,17 +1,17 @@
 import pandas as pd
-import sqlite3
+from sqlalchemy import create_engine
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 data_file = os.getenv('DATA_FILE')
-db_file = os.getenv('DB_FILE')
+db_url = os.getenv('DB_URL')
 
 # Load CSV data
 df = pd.read_csv(data_file)
 
-# Create SQLite connection
-conn = sqlite3.connect(db_file)
-df.to_sql('news', conn, if_exists='replace', index=False)
-conn.close()
+# Create PostgreSQL connection
+engine = create_engine(db_url)
+df.to_sql('news', engine, if_exists='replace', index=False)
+print("PostgreSQL database setup completed successfully.")
