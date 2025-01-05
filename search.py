@@ -24,18 +24,18 @@ def search_documents(query_string, page, per_page):
     """
     offset = (page - 1) * per_page
 
-    # Gunakan PostgreSQL untuk mencari dokumen dengan full-text search
+    # Gunakan PostgreSQL untuk mencari dokumen dengan pencarian teks biasa
     search_query = text("""
         SELECT *, COUNT(*) OVER() AS total_count
         FROM news
-        WHERE content_tsv @@ to_tsquery(:query_string)
+        WHERE content ILIKE :query_string
         ORDER BY id
         LIMIT :per_page OFFSET :offset
     """)
 
     with engine.connect() as conn:
         news_data = pd.read_sql_query(search_query, conn, params={
-            'query_string': query_string,
+            'query_string': f'%{query_string}%',
             'per_page': per_page,
             'offset': offset
         })
