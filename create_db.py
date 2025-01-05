@@ -21,6 +21,10 @@ with engine.connect() as conn:
         ALTER TABLE news ADD COLUMN content_tsv tsvector;
         UPDATE news SET content_tsv = to_tsvector('simple', content);
         CREATE INDEX idx_news_content_tsv ON news USING gin (content_tsv);
+        
+        CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE
+        ON news FOR EACH ROW EXECUTE FUNCTION
+        tsvector_update_trigger(content_tsv, 'pg_catalog.simple', content);
     """))
 
 print("PostgreSQL database setup and indexing completed successfully.")
