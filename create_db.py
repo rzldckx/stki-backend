@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import os
 from dotenv import load_dotenv
 
@@ -14,4 +14,13 @@ df = pd.read_csv(data_file)
 # Create PostgreSQL connection
 engine = create_engine(db_url)
 df.to_sql('news', engine, if_exists='replace', index=False)
-print("PostgreSQL database setup completed successfully.")
+
+# Create index and tsvector column
+with engine.connect() as conn:
+    conn.execute(text("""
+        ALTER TABLE news ADD COLUMN content_tsv tsvector;
+        UPDATE news SET content_tsv = to_tsvector('simple', content);
+        CREATE INDEX idx_news_content_tsv ON news USING gin (content_tsv);
+    """))
+
+print("PostgreSQL database setup and indexing completed successfully.")
