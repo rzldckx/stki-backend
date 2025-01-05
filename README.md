@@ -1,6 +1,6 @@
 # STKI Backend
 
-Proyek ini adalah backend dan API untuk search engine sederhana yang dibangun dengan menggunakan Flask dan Whoosh. Pengguna dapat mencari kata kunci tertentu dalam dokumen berita yang telah terindeks. API ini memungkinkan Anda untuk melakukan pencarian dan mendapatkan hasil yang relevan dari dataset berita.
+Proyek ini adalah backend dan API untuk search engine sederhana yang dibangun dengan menggunakan Flask dan PostgreSQL. Pengguna dapat mencari kata kunci tertentu dalam dokumen berita yang tersimpan di database PostgreSQL. API ini memungkinkan Anda untuk melakukan pencarian dan mendapatkan hasil yang relevan dari dataset berita.
 
 Repository ini berisi semua kode yang diperlukan untuk menjalankan backend dan API.
 
@@ -10,7 +10,7 @@ Repository ini berisi semua kode yang diperlukan untuk menjalankan backend dan A
 
 2. Install dependency
 
-   ```
+   ```sh
    pip install -r requirements.txt
    ```
 
@@ -21,14 +21,19 @@ Repository ini berisi semua kode yang diperlukan untuk menjalankan backend dan A
    ```
    cp .env.example .env
    ```
+5. Setup database PostgreSQL dengan menjalankan script berikut:
 
-5. Jalankan aplikasi Flask
+   ```
+   python create_db.py
+   ```
+
+6. Jalankan aplikasi Flask
 
    ```
    python app.py
    ```
 
-6. Akses API di `http://127.0.0.1:5000/news?page=1` untuk mendapatkan halaman pertama dari berita. Alamat IP menyesuaikan di mana server dijalankan.
+7. Akses API di `http://127.0.0.1:5000/news?page=1` untuk mendapatkan halaman pertama dari berita. Alamat IP menyesuaikan di mana server dijalankan.
 
 ## Pagination
 
@@ -50,10 +55,9 @@ stki-backend
 │   ├── data.csv        # Dataset dari Kaggle
 │   ├── news.csv        # Dataset berita yang sudah diolah
 │   └── README.md       # Dokumentasi dataset
-├── indexdir            # Direktori untuk indeks Whoosh
-│   └── README.md       # Dokumentasi direktori indeks
 ├── app.py              # Entry point dari aplikasi
-├── search.py           # Logika untuk pengindeksan dan pencarian dokumen│   
+├── search.py           # Logika untuk pencarian dokumen
+├── create_db.py        # Script untuk setup database
 ├── requirements.txt    # Dependency proyek
 ├── .env                # Environment variables
 ├── .env.example        # Contoh file environment variables
