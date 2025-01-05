@@ -28,7 +28,7 @@ def search_documents(query_string, page, per_page):
     search_query = text("""
         SELECT *, COUNT(*) OVER() AS total_count
         FROM news
-        WHERE content ILIKE :query_string
+        WHERE title ILIKE :query_string
         ORDER BY id
         LIMIT :per_page OFFSET :offset
     """)
